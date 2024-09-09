@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar with Search</title>
+    <link rel="stylesheet" href="/css/navigation.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard-management">Dashboard</a>
+            <% if(userRole==='Admin' ) { %>
+                <a href="/user-management">User</a>
+                <a href="/company-management">Company</a>
+                <a href="/topic-management">Topic</a>
+                <a href="/tag-management">Tag</a>
+                <a href="/post-management">Post</a>
+                <% }else if(userRole==='Company-account' ) { %>
+                    <a href="/user-management">User</a>
+                    <% }else{%>
+                        <a href="#">Member</a>
+                        <%}%>
+                           
+                            
+                          
+                           
+        </div>
+        <div class="navbar-right">
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+
+            </form>
+            <div class="img-container" style="text-align: center; border-radius: 10px;">
+                <img src="<%= userImage ? userImage : '/images/default.jpg' %>" alt="User Image"
+                    style="width: 30px; height: 30px; border: 1px solid; border-radius: 100px;margin: 10px;">
+
+                <div class="dropdown-menu"
+                    style="display: none; position: absolute; top: 60px; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px;">
+                    <a href="/upload"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Settings</a>
+
+                    <a href="/logout"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Logout</a>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+    <script>
+        document.querySelector('.img-container img').addEventListener('click', function () {
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Đóng dropdown nếu nhấn ngoài vùng dropdown
+        window.addEventListener('click', function (e) {
+            if (!document.querySelector('.img-container').contains(e.target)) {
+                document.querySelector('.dropdown-menu').style.display = 'none';
+            }
+        });
+        document.querySelector('.uo')
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/navigation.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .breadcrumbs {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .breadcrumbs li::after {
+            content: "/";
+            margin-left: 0.5rem;
+        }
+
+        .breadcrumbs li:last-child::after {
+            content: "";
+        }
+        #containerrr {
+    margin-top: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#containerrr div:first-child {
+    background-color: #5C7099;
+    border: 1px solid #99A5BF;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+   
+}
+
+#item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border: 1px solid #99A5BF;
+    border-top: none;
+    background-color: #F7F7F7;
+}
+
+#item h6 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+
+#item p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+       
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard-management">Dashboard</a>
+            <% if(userRole==='Admin' ) { %>
+            <a href="/user-management">User</a>
+            <a href="/company-management">Company</a>
+            <a href="/topic-management">Topic</a>
+            <a href="/tag-management">Tag</a>
+            <a href="/post-management">Post</a>
+            <% }else if(userRole==='Company-account' ) { %>
+            <a href="/user-management">User</a>
+            <% }else{%>
+            <a href="#">Member</a>
+            <%}%>
+        </div>
+        <div class="navbar-right">
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+            </form>
+            <div class="img-container" style="text-align: center; border-radius: 10px;">
+                <img src="<%= userImage ? userImage : '/images/default.jpg' %>" alt="User Image"
+                    style="width: 30px; height: 30px; border: 1px solid; border-radius: 100px; margin: 10px;">
+                <div class="dropdown-menu"
+                    style="display: none; position: absolute; top: 60px; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px;">
+                    <a href="/upload" style="display: block; text-decoration: none; color: black;">Settings</a>
+                    <a href="/logout" style="display: block; padding: 10px; text-decoration: none; color: black;">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div style="background-color: #F1F1F1;padding: 12px 30px;" id="breadcrumbs" class="breadcrumbs"></div>
+
+    <div class="" style="padding: 0px 30px;">
+        <div class="row">
+            <!-- Cột chính chiếm 10/12 -->
+            <div class="col-md-10">
+                
+               <div id="containerrr">
+                  <div style="background-color: #5C7099;border: 1px solid #99A5BF;color: white;padding: 10px 28px">All topic</div>
+                  <div id="item" style="display: flex; justify-content: space-between;border: 1px solid #99A5BF;">
+                    <div>
+                      <h6 style="text-align: center;">topic</h6>
+                    </div>
+                   <div>
+                    <p>topic </p>
+                   </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Sidebar chiếm 2/12 -->
+            <div class="col-md-2" style="border-left: 1px solid rgb(164, 158, 158); height: 900px;">
+                <h2>Bài post gần đây</h2>
+                <div class="post">
+                    <h3>Tiêu đề bài post 1</h3>
+                    <p>Nội dung ngắn gọn của bài post 1...</p>
+                </div>
+                <div class="post">
+                    <h3>Tiêu đề bài post 2</h3>
+                    <p>Nội dung ngắn gọn của bài post 2...</p>
+                </div>
+                <!-- Thêm nhiều bài post tùy thích -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const breadcrumbList = document.getElementById('breadcrumbs');
+        const pathnames = window.location.pathname.split('/').filter(x => x);
+
+        let path = '';
+        pathnames.forEach((name, index) => {
+            path += `/${name}`;
+            const li = document.createElement('li');
+            if (index === pathnames.length - 1) {
+                li.textContent = name;
+            } else {
+                const link = document.createElement('a');
+                link.href = path;
+                link.textContent = name;
+                li.appendChild(link);
+            }
+            breadcrumbList.appendChild(li);
+        });
+
+        // Add the "Home" link at the beginning
+        const homeLi = document.createElement('li');
+        const homeLink = document.createElement('a');
+        homeLink.href = '/navigation';
+        homeLink.textContent = 'Home';
+        homeLi.appendChild(homeLink);
+        breadcrumbList.insertBefore(homeLi, breadcrumbList.firstChild);
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+        <script>
+            document.querySelector('.img-container img').addEventListener('click', function () {
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+            // Đóng dropdown nếu nhấn ngoài vùng dropdown
+            window.addEventListener('click', function (e) {
+                if (!document.querySelector('.img-container').contains(e.target)) {
+                    document.querySelector('.dropdown-menu').style.display = 'none';
+                }
+            });
+            document.querySelector('.uo')
+        </script>
+</body>
+
+</html>

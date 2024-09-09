@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="/css/navigation.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        input[type="file"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            /* margin-bottom: 20px;
+            margin-left: 3px; */
+        }
+
+        #uploadedImageContainer img {
+            max-width: 150px;
+            height: auto;
+            margin-top: 20px;
+            display: block;
+        }
+
+        .breadcrumbs {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .breadcrumbs li::after {
+            content: "/";
+            margin-left: 0.5rem;
+        }
+
+        .breadcrumbs li:last-child::after {
+            content: "";
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard-management">Dashboard</a>
+            <% if(userRole==='Admin' ) { %>
+                <a href="/user-management">User</a>
+                <a href="/company-management">Company</a>
+                <a href="/topic-management">Topic</a>
+                <a href="/tag-management">Tag</a>
+                <a href="/post-management">Post</a>
+                <% }else if(userRole==='Company-account' ) { %>
+                    <a href="/user-management">User</a>
+                    <% }else{%>
+                        <a href="#">Khanh</a>
+                        <%}%>
+        </div>
+        <div class="navbar-right">
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+
+            </form>
+            <div class="img-container" style="text-align: center; border-radius: 10px;">
+                <img src="<%= userImage ? userImage : '/images/default.jpg' %>" alt="User Image"
+                    style="width: 30px; height: 30px; border: 1px solid; border-radius: 100px;margin: 10px;">
+
+                <div class="dropdown-menu"
+                    style="display: none; position: absolute; top: 60px; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px;">
+                    <a href="/upload"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Settings</a>
+
+                    <a href="/logout"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Logout</a>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+    <div style="background-color: #F1F1F1;padding: 12px 37px;" id="breadcrumbs" class="breadcrumbs"></div>
+    <div class="container">
+        
+
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" style="padding: 9px 26px;">
+            <h1>Upload Image</h1>
+            <div>
+
+            </div>
+            <div style="display: flex;align-items: flex-end;">
+                <div style="border-radius: 100px ;width: 100px;" id="uploadedImageContainer"></div>
+                <label for="uploadedImage" style="border-radius: 100px;width: 100px;justify-content: end;padding: 0px 20px 0px;">
+                    <i class="fa-solid fa-camera" style="padding: 0 43px;"></i>
+                    <input type="file" id="uploadedImage" name="image" accept="image/*" style="display: none;">
+                </label>
+            </div>
+           
+
+            <div style="display: flex; gap: 20px;padding: 20px 0;">
+                <div style="display: flex; flex-direction: column;">
+                    <label for="username">Name</label>
+                    <input type="text" name="username" placeholder="Username" value="<%= user.username %>">
+                </div>
+
+                <div style="display: flex; flex-direction: column;">
+                    <label for="email">Email</label>
+                    <input style="background-color: #ccc;" type="email" name="email" placeholder="Email"  value="<%= user.email %>"  readonly>
+                </div>
+            </div>
+            <div style="display: flex; gap: 20px; padding: 0px 0px 20px 0">
+                <div style="display: flex; flex-direction: column;">
+                    <label for="username">Old password</label>
+                    <input type="password" name="oldpassword" placeholder="Old Password" >
+                </div>
+
+                <div style="display: flex; flex-direction: column;">
+                    <label for="email">New Password</label>
+                    <input type="password" name="newpassword" placeholder="New Password">
+                </div>
+
+                <div style="display: flex; flex-direction: column;">
+                    <label for="email">Comfirm Password</label>
+                    <input type="password" name="comfirmpassword" placeholder="Confirm Password">
+                </div>
+            </div>
+
+            <label for="dob">Date of Birth:</label></br>
+            <input type="text" id="dob" name="dob" style="padding: 10px;"  value="<%= user.dob %>">
+            </br>
+            <button type="submit"
+                style="color: rgb(211, 211, 229); background:linear-gradient(to right, #D51E36, #273494);padding: 10px;margin: 13px 13px 13px -1px;">Save</button>
+        </form>
+
+        <!-- Container để hiển thị ảnh sau khi upload -->
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="/path-to-your-node_modules/toastr/build/toastr.min.js"></script>
+    <script>
+        flatpickr("#dob", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
+    // Lắng nghe sự kiện thay đổi của input file
+    document.getElementById('uploadedImage').addEventListener('change', function (event) {
+        const file = event.target.files[0]; 
+        if (file) {
+            const reader = new FileReader(); 
+            reader.onload = function (e) {
+                const imgContainer = document.getElementById('uploadedImageContainer');
+                imgContainer.innerHTML = ''; 
+                const img = document.createElement('img');
+                img.src = e.target.result; 
+                imgContainer.appendChild(img);  
+            };
+            reader.readAsDataURL(file); 
+        }
+    });
+</script>
+    <script>
+        document.querySelector('.img-container img').addEventListener('click', function () {
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Đóng dropdown nếu nhấn ngoài vùng dropdown
+        window.addEventListener('click', function (e) {
+            if (!document.querySelector('.img-container').contains(e.target)) {
+                document.querySelector('.dropdown-menu').style.display = 'none';
+            }
+        });
+
+
+    </script>
+    <script>
+        const breadcrumbList = document.getElementById('breadcrumbs');
+        const pathnames = window.location.pathname.split('/').filter(x => x);
+
+        let path = '';
+        pathnames.forEach((name, index) => {
+            path += `/${name}`;
+            const li = document.createElement('li');
+            if (index === pathnames.length - 1) {
+                li.textContent = name;
+            } else {
+                const link = document.createElement('a');
+                link.href = path;
+                link.textContent = name;
+                li.appendChild(link);
+            }
+            breadcrumbList.appendChild(li);
+        });
+
+        // Add the "Home" link at the beginning
+        const homeLi = document.createElement('li');
+        const homeLink = document.createElement('a');
+        homeLink.href = '/navigation';
+        homeLink.textContent = 'Home';
+        homeLi.appendChild(homeLink);
+        breadcrumbList.insertBefore(homeLi, breadcrumbList.firstChild);
+    </script>
+
+</body>
+
+</html>

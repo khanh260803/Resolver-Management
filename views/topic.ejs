@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/navigation.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .breadcrumbs {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .breadcrumbs li::after {
+            content: "/";
+            margin-left: 0.5rem;
+        }
+
+        .breadcrumbs li:last-child::after {
+            content: "";
+        }
+
+        table th,
+        table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        table th,
+        table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        /* Điều chỉnh kích thước ảnh để vừa với ô bảng */
+        .user-image {
+            width: 30px;
+            /* Kích thước ảnh nhỏ hơn */
+            height: 30px;
+            border-radius: 50%;
+            /* Làm tròn ảnh */
+            margin-right: 10px;
+            /* Tạo khoảng cách giữa ảnh và nội dung bên cạnh */
+        }
+
+        /* Bố trí tên và email trong cùng một cột, và ảnh nằm ngang với chúng */
+        .user-info {
+            display: flex;
+            align-items: center;
+            /* Đặt ảnh ngang hàng với nội dung */
+        }
+
+        /* Bố trí tên và email theo chiều dọc */
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-details span {
+            font-size: 12px;
+            /* Giảm kích thước chữ cho tên và email */
+        }
+
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard-management">Dashboard</a>
+            <% if(userRole==='Admin' ) { %>
+                <a href="/user-management">User</a>
+                <a href="/company-management">Company</a>
+                <a href="/topic-management">Topic</a>
+                <a href="/tag-management">Tag</a>
+                <a href="/post-management">Post</a>
+                <% }else if(userRole==='Company-account' ) { %>
+                    <a href="/user-management">User</a>
+                    <% }else{%>
+                        <a href="#">Khanh</a>
+                        <%}%>
+                            
+                            
+                         
+        </div>
+        <div class="navbar-right">
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+
+            </form>
+            <div class="img-container" style="text-align: center; border-radius: 10px;">
+                <img src="<%= userImage ? userImage : '/images/default.jpg' %>" alt="User Image"
+                    style="width: 30px; height: 30px; border: 1px solid; border-radius: 100px;margin: 10px;">
+
+                <div class="dropdown-menu"
+                    style="display: none; position: absolute; top: 60px; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px;">
+                    <a href="/upload"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Settings</a>
+
+                    <a href="/logout"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Logout</a>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+    <div style="background-color: #F1F1F1;padding: 12px 37px;" id="breadcrumbs" class="breadcrumbs"></div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;padding: 13px 20px 14px 20px;">
+        <h1 style="font-size: 21px;padding: 6px 18px;font-weight: bold;">Topic Management</h1>
+        <button 
+            style="width: 85px;height: 40px;border-radius: 4px;border: none; background: #3CA3DD;margin-right: 20px;"><a href="/topic-management/add-topic">New Topic</a></button>
+    </div>
+
+        <div class="" style="margin: 10px;padding: 0px 30px;">
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                <i class="fa-solid fa-user"></i>NAME
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                <i class="fa-solid fa-lock"></i>Number of Post
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                               
+                            </th>
+                           
+                                
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% users.forEach(user=> { %>
+                            <tr class="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400" data-user-id="<%= user.id %>">
+                                <th scope="row"
+                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <div class="user-info">
+                                        
+                                        <div class="user-details">
+                                            <p style="font-weight: bold;font-size: 12px;"><%= user.name %></p>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td class="px-6 py-4">
+                                   
+                                </td>
+                                
+                                 <!-- Dropdown Menu -->
+                            <td class="px-6 py-4" style="position: relative;">
+                                <button class="show-actions-button" style="background-color: transparent; border: none;">
+                                    <i class="fa-solid fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" style="display: none; position: absolute; top: 0; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; z-index: 100;">
+                                    <a href="#" class="edit-link" style="display: block; padding: 10px; text-decoration: none; color: black;">Edit</a>
+                                    <a href="#" class="delete-link" style="display: block; padding: 10px; text-decoration: none; color: black;">Delete</a>
+                                </div>
+                            </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+
+                </table>
+            </div>
+       
+    </div>
+    <div class="pagination">
+        <% if (currentPage> 1) { %>
+            <a href="/user-management?page=<%= currentPage - 1 %>">Previous</a>
+            <% } %>
+                <% for (let i=1; i <=totalPages; i++) { %>
+                    <a href="/user-management?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+                        <%= i %>
+                    </a>
+                    <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/user-management?page=<%= currentPage + 1 %>">Next</a>
+                            <% } %>
+    </div>
+    <script>
+        document.querySelectorAll('table tbody tr').forEach(row => {
+            row.addEventListener('click', function (e) {
+                const userId = this.dataset.userId;
+                const dropdownMenu = this.querySelector('.dropdown-menu');
+    
+                // Toggle visibility of the dropdown menu
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    
+                // Handle click on Edit link
+                this.querySelector('.edit-link').addEventListener('click', function (event) {
+                    event.stopPropagation(); // Prevent row click event
+                    window.location.href = `/user-management/edit-user/${userId}`;
+                });
+    
+                // Handle click on Delete link
+                this.querySelector('.delete-link').addEventListener('click', function (event) {
+                    event.stopPropagation(); // Prevent row click event
+                    deleteUser(userId);
+                });
+            });
+        });
+    
+        function deleteUser(userId) {
+            if (confirm('Are you sure? You cannot undo this action afterward.')) {
+                fetch(`/user-management/delete/${userId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        document.querySelector(`tr[data-user-id="${userId}"]`).remove();
+                    } else {
+                        alert('Failed to delete user');
+                    }
+                });
+            }
+        }
+    
+        // Close dropdown if clicked outside
+        window.addEventListener('click', function (e) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (!menu.contains(e.target) && !menu.parentElement.contains(e.target)) {
+                    menu.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script>
+        function deleteUser(userId) {
+            if (confirm('are you sure?You cant undo this action afterward')) {
+                fetch(`/user-management/delete/${userId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            document.querySelector(`tr[data-user-id="${userId}"]`).remove();
+                        } else {
+                            alert('Failed to delete user');
+                        }
+                    })
+            }
+        }
+    </script>
+
+    
+    <script>
+        const breadcrumbList = document.getElementById('breadcrumbs');
+        const pathnames = window.location.pathname.split('/').filter(x => x);
+
+        let path = '';
+        pathnames.forEach((name, index) => {
+            path += `/${name}`;
+            const li = document.createElement('li');
+            if (index === pathnames.length - 1) {
+                li.textContent = name;
+            } else {
+                const link = document.createElement('a');
+                link.href = path;
+                link.textContent = name;
+                li.appendChild(link);
+            }
+            breadcrumbList.appendChild(li);
+        });
+
+        // Add the "Home" link at the beginning
+        const homeLi = document.createElement('li');
+        const homeLink = document.createElement('a');
+        homeLink.href = '/navigation';
+        homeLink.textContent = 'Home';
+        homeLi.appendChild(homeLink);
+        breadcrumbList.insertBefore(homeLi, breadcrumbList.firstChild);
+    </script>
+     <script>
+        document.querySelector('.img-container img').addEventListener('click', function () {
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Đóng dropdown nếu nhấn ngoài vùng dropdown
+        window.addEventListener('click', function (e) {
+            if (!document.querySelector('.img-container').contains(e.target)) {
+                document.querySelector('.dropdown-menu').style.display = 'none';
+            }
+        });
+        document.querySelector('.uo')
+
+    </script>
+</body>
+</html>

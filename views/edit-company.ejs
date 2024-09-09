@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/navigation.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .breadcrumbs {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .breadcrumbs li::after {
+            content: "/";
+            margin-left: 0.5rem;
+        }
+
+        .breadcrumbs li:last-child::after {
+            content: "";
+        }
+
+        table th,
+        table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        table th,
+        table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        /* Điều chỉnh kích thước ảnh để vừa với ô bảng */
+        .user-image {
+            width: 30px;
+            /* Kích thước ảnh nhỏ hơn */
+            height: 30px;
+            border-radius: 50%;
+            /* Làm tròn ảnh */
+            margin-right: 10px;
+            /* Tạo khoảng cách giữa ảnh và nội dung bên cạnh */
+        }
+
+        /* Bố trí tên và email trong cùng một cột, và ảnh nằm ngang với chúng */
+        .user-info {
+            display: flex;
+            align-items: center;
+            /* Đặt ảnh ngang hàng với nội dung */
+        }
+
+        /* Bố trí tên và email theo chiều dọc */
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-details span {
+            font-size: 12px;
+            /* Giảm kích thước chữ cho tên và email */
+        }
+
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .form-add-user {
+            width: 100%;
+
+        }
+
+        .input-field {
+            padding: 30px;
+        }
+
+        .container-item {
+            width: 100%;
+            padding: 50px 100px 100px 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard-management">Dashboard</a>
+            <% if(userRole==='Admin' ) { %>
+                <a href="/user-management">User</a>
+                <a href="/company-management">Company</a>
+                <a href="/topic-management">Topic</a>
+                <a href="/tag-management">Tag</a>
+                <a href="/post-management">Post</a>
+                <% }else if(userRole==='Company-account' ) { %>
+                    <a href="/user-management">User</a>
+                    <% }else{%>
+                        <a href="#">Khanh</a>
+                        <%}%>
+        </div>
+        <div class="navbar-right">
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+
+            </form>
+            <div class="img-container" style="text-align: center; border-radius: 10px;">
+                <img src="<%= userImage ? userImage : '/images/default.jpg' %>" alt="User Image"
+                    style="width: 30px; height: 30px; border: 1px solid; border-radius: 100px;margin: 10px;">
+
+                <div class="dropdown-menu"
+                    style="display: none; position: absolute; top: 60px; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px;">
+                    <a href="/upload"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Settings</a>
+
+                    <a href="/logout"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Logout</a>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+    <div style="background-color: #F1F1F1;padding: 10px 10px 10px 36px;" id="breadcrumbs" class="breadcrumbs"></div>
+
+
+
+
+    <div class="container-item" style="position: absolute;">
+        <div class="toast" style="position: relative; float: right;">
+
+
+            <div id="toast-success"
+                class="hidden flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                role="alert">
+                <div
+                    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                    </svg>
+                    <span class="sr-only">Check icon</span>
+                </div>
+                <div class="ms-3 text-sm font-normal">Item moved successfully.</div>
+                <button type="button"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                    data-dismiss-target="#toast-success" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+            <div id="toast-danger"
+                class="hidden flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                role="alert">
+                <div
+                    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+                    </svg>
+                    <span class="sr-only">Error icon</span>
+                </div>
+                <div class="ms-3 text-sm font-normal">Item has been deleted.</div>
+                <button type="button"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                    data-dismiss-target="#toast-danger" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+            <div id="toast-warning"
+                class="hidden flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                role="alert">
+                <div
+                    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
+                    </svg>
+                    <span class="sr-only">Warning icon</span>
+                </div>
+                <div class="ms-3 text-sm font-normal">Improve password difficulty.</div>
+                <button type="button"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                    data-dismiss-target="#toast-warning" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+
+
+        </div>
+
+        <form id="form_item" action="/user-management/edit-user/<%= users.id %>" method="post">
+
+            <div class="grid gap-6 mb-6 md:grid-cols-2">
+                
+                <div>
+                    <label for="Adre"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+                    <input type="username" id="username" name="full_name" value="<%= address %>"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="John" required />
+                </div>
+                <div>
+                    <label for="max_user"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Max_users</label>
+                    <input type="max_user" id="max_user" name="max_user" value="<%=max_users  %>"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="John" required />
+                </div>
+
+
+              
+                <div>
+                    <label for="company"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
+                    <select id="company" name="company"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required>
+                        <option value="Company 1" <%=users.company==='Company 1' ? 'selected' : '' %>>Company 1</option>
+                        <option value="Company 2" <%=users.company==='Company 2' ? 'selected' : '' %>>Company 2</option>
+                        <option value="Company 3" <%=users.company==='Company 3' ? 'selected' : '' %>>Company 3</option>
+                    </select>
+                </div>
+                <div>
+                    <div>
+                        <label for="active"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                        <select id="active" name="active"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required>
+                            <option value="Active" <%=users.status==='Active' ? 'selected' : '' %>>Active</option>
+                            <option value="Pending" <%=users.status==='Pending' ? 'selected' : '' %>>Pending</option>
+
+                        </select>
+                    </div>
+
+                   
+
+
+                </div>
+                <div>
+                    <label for="date"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expired_Date</label>
+                    <input type="date" id="date" name="date" value="<%= expired %>"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="phone" required />
+                </div>
+            </div>
+
+
+            <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+
+        </form>
+
+
+    </div>
+
+    <script>
+        const breadcrumbList = document.getElementById('breadcrumbs');
+        const pathnames = window.location.pathname.split('/').filter(x => x);
+
+        let path = '';
+        pathnames.forEach((name, index) => {
+            path += `/${name}`;
+            const li = document.createElement('li');
+            if (index === pathnames.length - 1) {
+                li.textContent = name;
+            } else {
+                const link = document.createElement('a');
+                link.href = path;
+                link.textContent = name;
+                li.appendChild(link);
+            }
+            breadcrumbList.appendChild(li);
+        });
+
+        // Add the "Home" link at the beginning
+        const homeLi = document.createElement('li');
+        const homeLink = document.createElement('a');
+        homeLink.href = '/navigation';
+        homeLink.textContent = 'Home';
+        homeLi.appendChild(homeLink);
+        breadcrumbList.insertBefore(homeLi, breadcrumbList.firstChild);
+    </script>
+
+    <script>
+        document.getElementById('form_item').addEventListener('submit', async (e) => {
+
+        })
+    </script>
+
+
+</body>
+
+</html>

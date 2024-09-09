@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Login and Signup Form</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Boxicons CSS -->
+  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+
+  <script>
+   async function handleLogin(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const email = document.querySelector('input[name="email"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+    const errorMessage = document.getElementById('error-message'); // Thêm phần tử để hiển thị lỗi
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+            window.location.href = '/navigation';
+            alert('login successfull')
+        } else {
+            const data = await response.json();
+            console.log(data)
+            errorMessage.textContent = data.message; 
+            errorMessage.style.color = 'red'; 
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        errorMessage.textContent = 'Server error. Please try again later.';
+    }
+}
+  </script>
+
+</head>
+
+<body>
+  <%- include('home.ejs') %>
+  <section class="container forms" style="text-align: center;">
+    <div class="form login">
+      <div class="form-content">
+        <header>Login</header>
+
+        <div class="img-container" style="text-align: center; border-radius: 10px;">
+         
+            <img src="/images/default.jpg"
+                 style="width: 150px; height: 150px; border-radius: 100px;">
+         
+         
+        </div>
+        <form id="loginForm">
+          <div class="field input-field">
+            <input type="email" name="email" placeholder="Email" class="input" required>
+          </div>
+
+          <div class="field input-field">
+            <input type="password" name="password" placeholder="Password" class="password" required>
+            <i class='bx bx-hide eye-icon'></i>
+          </div>
+          <p id="error-message"></p>
+
+          <div class="form-link" style="color: black;">
+            <a style="color: black;" href="/forgetpass" class="forgot-pass">Forgot password?</a>
+          </div>
+          
+
+          <div class="field button-field">
+            <button type="submit" onclick="handleLogin(event)">Login</button>
+          </div>
+        </form>
+
+        <div class="form-link">
+          <span>Don't have an account? <a href="/register" class="link signup-link">Signup</a></span>
+        </div>
+      </div>
+
+      <div class="line"></div>
+
+      <div class="media-options">
+        <a href="#" class="field facebook">
+          <i class='bx bxl-facebook facebook-icon'></i>
+          <span>Login with Facebook</span>
+        </a>
+      </div>
+
+      <div class="media-options">
+        <a href="#" class="field google">
+          <img src="#" alt="" class="google-img">
+          <span>Login with Google</span>
+        </a>
+      </div>
+      <div class="media-options">
+        <a href="#" class="field apple">
+          <img src="#" alt="" class="apple-img">
+          <span>Login with Apple</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- JavaScript -->
+  <script src="js/script.js"></script>
+</body>
+
+</html>

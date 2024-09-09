@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/navigation.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .breadcrumbs {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .breadcrumbs li::after {
+            content: "/";
+            margin-left: 0.5rem;
+        }
+
+        .breadcrumbs li:last-child::after {
+            content: "";
+        }
+
+        table th,
+        table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        table th,
+        table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        /* Điều chỉnh kích thước ảnh để vừa với ô bảng */
+        .user-image {
+            width: 30px;
+            /* Kích thước ảnh nhỏ hơn */
+            height: 30px;
+            border-radius: 50%;
+            /* Làm tròn ảnh */
+            margin-right: 10px;
+            /* Tạo khoảng cách giữa ảnh và nội dung bên cạnh */
+        }
+
+        /* Bố trí tên và email trong cùng một cột, và ảnh nằm ngang với chúng */
+        .user-info {
+            display: flex;
+            align-items: center;
+            /* Đặt ảnh ngang hàng với nội dung */
+        }
+
+        /* Bố trí tên và email theo chiều dọc */
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-details span {
+            font-size: 12px;
+            /* Giảm kích thước chữ cho tên và email */
+        }
+
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard-management">Dashboard</a>
+            <% if(userRole==='Admin' ) { %>
+                <a href="/user-management">User</a>
+                <a href="/company-management">Company</a>
+                <a href="/topic-management">Topic</a>
+                <a href="/tag-management">Tag</a>
+                <% }else if(userRole==='Company-account' ) { %>
+                    <a href="/user-management">User</a>
+                    <% }else{%>
+                        <a href="#">Member</a>
+                        <%}%>
+                           
+                            
+                          
+                            <a href="#">Post</a>
+        </div>
+        <div class="navbar-right">
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+
+            </form>
+            <div class="img-container" style="text-align: center; border-radius: 10px;">
+                <img src="<%= userImage ? userImage : '/images/default.jpg' %>" alt="User Image"
+                    style="width: 30px; height: 30px; border: 1px solid; border-radius: 100px;margin: 10px;">
+
+                <div class="dropdown-menu"
+                    style="display: none; position: absolute; top: 60px; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px;">
+                    <a href="/upload"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Settings</a>
+
+                    <a href="/logout"
+                        style="display: block; padding: 10px; text-decoration: none; color: black;">Logout</a>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+    <div style="background-color: #F1F1F1;padding: 10px;" id="breadcrumbs" class="breadcrumbs"></div>
+   <div class="item" style="padding: 20px;">
+    
+    <div style="display: flex;justify-content: space-between;">
+        <div>
+            <h1 style="font-weight: bold;padding: 10px 10px 10px 0%">Create/Update Company</h1>
+        </div>
+        
+        <div>
+            <button style="padding: 10px 10px 10px 10px; background-color: #4a9bf1; text-align: center; color: white; margin: 10px 10px;"> <a href="/company-management">Back</a></button>
+        </div>
+        
+    </div>
+    
+<form action="/company-management/add-company" method="post">
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div>
+            <label for="Name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+            <input type="text" id="Name" name="Name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="John" required />
+        </div>
+        <div>
+            <label for="Address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+            <input type="text" id="Address" name="Address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Doe" required />
+        </div>
+        <div>
+            <label for="Max_users" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Max_users</label>
+            <input type="text" id="Max_users" name="Max_users" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Flowbite" required />
+        </div>  
+        <div>
+            <label for="expired " class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expired at</label>
+            <input type="date" id="expired" name="expired" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required />
+        </div>
+        <div>
+            <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Active</label>
+            <select id="active" name="active"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required>
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+
+                    </select>
+        
+    <button type="submit" style="padding: 10px 10px 10px 10px; background-color: #4a9bf1; text-align: center; color: white; margin: 10px 0px;">Submit</button>
+</form>
+
+    <script>
+        const breadcrumbList = document.getElementById('breadcrumbs');
+        const pathnames = window.location.pathname.split('/').filter(x => x);
+
+        let path = '';
+        pathnames.forEach((name, index) => {
+            path += `/${name}`;
+            const li = document.createElement('li');
+            if (index === pathnames.length - 1) {
+                li.textContent = name;
+            } else {
+                const link = document.createElement('a');
+                link.href = path;
+                link.textContent = name;
+                li.appendChild(link);
+            }
+            breadcrumbList.appendChild(li);
+        });
+
+        // Add the "Home" link at the beginning
+        const homeLi = document.createElement('li');
+        const homeLink = document.createElement('a');
+        homeLink.href = '/navigation';
+        homeLink.textContent = 'Home';
+        homeLi.appendChild(homeLink);
+        breadcrumbList.insertBefore(homeLi, breadcrumbList.firstChild);
+    </script>
+</body>
+</html>
